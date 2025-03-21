@@ -1,8 +1,8 @@
 use std::fs;
-use iced::{Theme};
+use iced::Theme;
 use rfd::FileDialog;
 use iced::widget::{column, Column, text_editor, button, text, row, Row, Button, Text};
-use crate::style::transparent_style;
+use crate::style::{transparent_style, transparent_text_editor_style};
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -25,7 +25,7 @@ pub fn update(state: &mut State, message: Message){
         }
         Message::OpenFile =>{
             if let Some(path) = FileDialog::new().pick_file() {
-                state.file = Some(path.display().to_string());
+                state.file = Some(path.display().to_string()); //Devo fare in modo che questa venga impostata solo se il file e' valido
             }
             
             if let Some(path) = &state.file {
@@ -69,8 +69,8 @@ pub fn view(state: &State) -> Column<Message>{
         ].spacing(0),
 
         text(state.message.clone()),
-        text_editor::<Message, Theme, iced::Renderer>(&state.content)
-            .on_action(Message::Edit)
+        text_editor(&state.content).style(transparent_text_editor_style)
+            .on_action(Message::Edit).height(10000),
     ].into()
 }
 
