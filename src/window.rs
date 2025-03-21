@@ -32,6 +32,7 @@ pub fn update(state: &mut State, message: Message){
         }
         Message::OpenFile =>{
 
+            let old_file =state.file.clone();
 
             if let Some(path) = FileDialog::new().pick_file() {
                 state.file = Some(path.display().to_string());
@@ -45,6 +46,7 @@ pub fn update(state: &mut State, message: Message){
                     },
                     Err(_) => {
                         state.message = "Can't open this file".to_string();
+                        state.file = old_file.clone();
                     }
                 }
             } else {
