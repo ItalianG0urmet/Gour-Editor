@@ -20,8 +20,8 @@ pub fn transparent_text_editor_style(theme: &Theme, _status: iced::widget::text_
         background: Background::Color(colors::brunet()),
         border: Border {
             color: Color::TRANSPARENT,
-            width: 5.0,
-            radius: 0.5.into(),
+            width: 0.0,
+            radius: 0.0.into(),
         },
         icon: Default::default(),
         placeholder: Color::WHITE,
