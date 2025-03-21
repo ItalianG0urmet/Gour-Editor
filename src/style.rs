@@ -4,7 +4,7 @@ use crate::colors;
 
 pub fn button_style(theme: &Theme, _status: Status) -> Style {
     Style {
-        background: Some(Background::Color(colors::dark_brunet())),
+        background: Some(Background::Color(colors::dark_gray())),
         text_color: theme.palette().text,
         border: Border {
             color: Color::TRANSPARENT,
@@ -17,16 +17,16 @@ pub fn button_style(theme: &Theme, _status: Status) -> Style {
 
 pub fn text_editor_style(theme: &Theme, _status: iced::widget::text_editor::Status) -> iced::widget::text_editor::Style {
     iced::widget::text_editor::Style {
-        background: Background::Color(colors::brunet()),
+        background: Background::Color(colors::gray()),
         border: Border {
-            color: colors::dark_brunet(),
-            width: 1.0,
-            radius: 0.0.into(),
+            color: Color::BLACK,
+            width: 2.8,
+            radius: 0.5.into(),
         },
         icon: Default::default(),
         placeholder: Color::WHITE,
         value: Color::WHITE,
-        selection: Default::default(),
+        selection: colors::blue(),
     }
 }
 

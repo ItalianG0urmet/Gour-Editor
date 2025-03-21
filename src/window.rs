@@ -88,5 +88,5 @@ pub fn view(state: &State) -> Column<Message>{
             .on_action(Message::Edit).height(10000).highlight(state.file.as_ref()
             .and_then(|path| Path::new(path).extension()?.to_str())
             .unwrap_or("txt"), Theme::SolarizedDark)
-    ].into()
+    ].spacing(10).into()
 }

@@ -1,8 +1,8 @@
 use iced::Color;
 
-pub fn dark_brunet() -> Color {
+pub fn dark_gray() -> Color {
     let factor = 0.8;
-    let base = brunet();
+    let base = gray();
     Color::from_rgb(
         base.r * factor,
         base.g * factor,
@@ -11,6 +11,10 @@ pub fn dark_brunet() -> Color {
 }
 
 
-pub fn brunet() -> Color {
-    Color::from_rgb(0.24, 0.22, 0.22)
+pub fn gray() -> Color {
+    Color::from_rgb(0.14, 0.14, 0.14)
+}
+
+pub fn blue() -> Color {
+    Color::from_rgb(0.0, 0.128, 0.255)
 }
