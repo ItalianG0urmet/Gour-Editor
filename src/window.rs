@@ -1,14 +1,9 @@
 use std::fs;
+use std::path::Path;
+use iced::highlighter::{Theme};
 use rfd::FileDialog;
 use iced::widget::{column, Column, text_editor, button, text, row};
-use crate::style::{transparent_style, transparent_text_editor_style};
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum Tab {
-    File,
-    Edit,
-    View,
-}
+use crate::style::{button_style, text_editor_style};
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -82,14 +77,16 @@ pub fn view(state: &State) -> Column<Message>{
 
     column![
         row![
-            button("Open").style(transparent_style).on_press(Message::OpenFile),
-            button("Save").style(transparent_style).on_press(Message::SaveFile),
-            button("New File").style(transparent_style).on_press(Message::NewFile),
+            button("Open").style(button_style).on_press(Message::OpenFile),
+            button("Save").style(button_style).on_press(Message::SaveFile),
+            button("New File").style(button_style).on_press(Message::NewFile),
 
         ].spacing(0),
 
         text(state.message.clone()),
-        text_editor(&state.content).style(transparent_text_editor_style)
-            .on_action(Message::Edit).height(10000),
+        text_editor(&state.content).style(text_editor_style)
+            .on_action(Message::Edit).height(10000).highlight(state.file.as_ref()
+            .and_then(|path| Path::new(path).extension()?.to_str())
+            .unwrap_or("txt"), Theme::SolarizedDark)
     ].into()
 }
