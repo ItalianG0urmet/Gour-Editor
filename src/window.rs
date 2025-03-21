@@ -1,6 +1,8 @@
 use std::fs;
+use iced::{Theme};
 use rfd::FileDialog;
-use iced::widget::{column, Column, text_editor, button, text, row, Row};
+use iced::widget::{column, Column, text_editor, button, text, row, Row, Button, Text};
+use crate::style::transparent_style;
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -15,8 +17,6 @@ pub enum Message {
     OpenFile,
     SaveFile,
 }
-
-
 
 pub fn update(state: &mut State, message: Message){
     match message{
@@ -60,18 +60,17 @@ pub fn update(state: &mut State, message: Message){
 }
 
 pub fn view(state: &State) -> Column<Message>{
-    
 
     column![
         row![
-            button("File").on_press(Message::OpenFile),
-            button("Save").on_press(Message::SaveFile),
-        ]
-        .spacing(10),
+            button("Open").style(transparent_style).on_press(Message::OpenFile),
+            button("Save").style(transparent_style).on_press(Message::SaveFile),
+
+        ].spacing(0),
+
         text(state.message.clone()),
-        text_editor::<Message, iced::theme::Theme, iced::Renderer>(&state.content)
+        text_editor::<Message, Theme, iced::Renderer>(&state.content)
             .on_action(Message::Edit)
     ].into()
 }
-
 
