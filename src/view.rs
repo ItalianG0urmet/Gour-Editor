@@ -1,4 +1,4 @@
-use iced::widget::{button, column, row, text, text_editor, Column};
+use iced::widget::{button, column, row, text, text_editor, Column, Row};
 use std::path::Path;
 use iced::highlighter::Theme;
 use crate::style::{button_active_style, button_style, text_editor_style};
@@ -41,33 +41,32 @@ pub fn view(state: &State) -> Column<Message>{
 
             column![
                 text(state.message.clone()),
-                row![
-                    Column::with_children(
-                        state.opened_files.iter().map(|(path, content)| {
-                            let file_name = Path::new(path)
-                                .file_name()
-                                .and_then(|n| n.to_str())
-                                .unwrap_or("Untitled");
+                Row::with_children(
+                    state.opened_files.iter().map(|(path, content)| {
+                        let file_name = Path::new(path)
+                            .file_name()
+                            .and_then(|n| n.to_str())
+                            .unwrap_or("Untitled");
 
-                            let is_active = state.current_file_path.as_ref()
-                                .map(|current| Path::new(current) != Path::new(path))
-                                .unwrap_or(false);
+                        let is_active = state.current_file_path.as_ref()
+                            .map(|current| Path::new(current) != Path::new(path))
+                            .unwrap_or(false);
 
 
-                            button(file_name)
-                                .style(if is_active {
-                                        button_style
-                                    }else{
-                                        button_active_style
-                                    })
-                                .on_press(Message::ChangeMainFile(path.clone()))
-                                .into()
-                        }).collect::<Vec<_>>()
-                    ),
-                ].spacing(0),
+                        button(file_name)
+                            .style(if is_active {
+                                    button_style
+                                }else{
+                                    button_active_style
+                                })
+                            .on_press(Message::ChangeMainFile(path.clone()))
+                            .into()
+                    }).collect::<Vec<_>>()
+                ),
 
                 text_editor(&state.current_file_content).style(text_editor_style)
-                    .on_action(Message::Edit).height(10000).highlight(state.current_file_path.as_ref()
+                    .on_action(Message::Edit).height(10000)
+                    .highlight(state.current_file_path.as_ref()
                     .and_then(|path| Path::new(path).extension()?.to_str())
                     .unwrap_or("txt"), Theme::SolarizedDark)
             ]

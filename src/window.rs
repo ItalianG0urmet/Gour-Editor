@@ -5,10 +5,10 @@ use iced::widget::{text_editor};
 
 #[derive(Debug, Default)]
 pub struct State {
-    pub(crate) message: String, //This is the message that appear
-    pub(crate) current_file_content: text_editor::Content,
+    pub(crate) message: String,
+    pub(crate) current_file_content:  text_editor::Content,
     pub(crate) current_file_path: Option<String>,
-    pub(crate) opened_files: HashMap<String, String>,
+    pub(crate) opened_files: HashMap<String, String>, //Path and Content
 
     pub(crate) selected_folder: Option<String>,
     pub(crate) selected_folder_files: Vec<String>,
@@ -30,7 +30,12 @@ pub enum Message {
 pub fn update(state: &mut State, message: Message){
     match message{
         Message::Edit(action) => {
-            state.current_file_content.perform(action)
+            state.current_file_content.perform(action);
+            if let Some(path) = &state.current_file_path {
+                if let Some(value) = state.opened_files.get_mut(path) {
+                    *value = state.current_file_content.text();
+                }
+            }
         }
         Message::OpenFile =>{
 
@@ -124,7 +129,7 @@ pub fn update(state: &mut State, message: Message){
         }
         Message::ViewDirectorys => {
 
-                state.enable_directorys_view = !state.enable_directorys_view;
+            state.enable_directorys_view = !state.enable_directorys_view;
 
         }
         Message::ChangeMainFile(path) => {
@@ -142,5 +147,3 @@ pub fn update(state: &mut State, message: Message){
         }
     }
 }
-
-
