@@ -1,7 +1,7 @@
 use iced::Color;
 
 pub fn dark_gray() -> Color {
-    let factor = 0.8;
+    let factor = 0.7;
     let base = gray();
     Color::from_rgb(
         base.r * factor,

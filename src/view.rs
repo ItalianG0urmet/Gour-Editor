@@ -1,5 +1,6 @@
 use iced::widget::{button, column, row, text, text_editor, Column, Row};
 use std::path::Path;
+use iced::Fill;
 use iced::highlighter::Theme;
 use crate::style::{button_active_style, button_style, text_editor_style};
 use crate::window::{Message, State};
@@ -40,7 +41,6 @@ pub fn view(state: &State) -> Column<Message>{
 
 
             column![
-                text(state.message.clone()),
                 Row::with_children(
                     state.opened_files.iter().map(|(path, content)| {
                         let file_name = Path::new(path)
@@ -65,11 +65,12 @@ pub fn view(state: &State) -> Column<Message>{
                 ),
 
                 text_editor(&state.current_file_content).style(text_editor_style)
-                    .on_action(Message::Edit).height(10000)
+                    .on_action(Message::Edit).height(Fill)
                     .highlight(state.current_file_path.as_ref()
                     .and_then(|path| Path::new(path).extension()?.to_str())
-                    .unwrap_or("txt"), Theme::SolarizedDark)
+                    .unwrap_or("txt"), Theme::SolarizedDark),
+                text(state.message.clone()),
             ]
         ]
-    ].spacing(10).into()
+    ].spacing(14).into()
 }

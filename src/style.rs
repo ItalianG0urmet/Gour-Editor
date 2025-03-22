@@ -4,7 +4,7 @@ use crate::colors;
 
 pub fn button_style(theme: &Theme, _status: Status) -> Style {
     Style {
-        background: Some(Background::Color(colors::dark_gray())),
+        background: Some(Background::Color(colors::gray())),
         text_color: theme.palette().text,
         border: Border {
             color: Color::TRANSPARENT,
@@ -17,7 +17,7 @@ pub fn button_style(theme: &Theme, _status: Status) -> Style {
 
 pub fn button_active_style(theme: &Theme, _status: Status) -> Style {
     Style {
-        background: Some(Background::Color(Color::BLACK)),
+        background: Some(Background::Color(colors::dark_gray())),
         text_color: theme.palette().text,
         border: Border {
             color: Color::TRANSPARENT,
