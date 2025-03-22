@@ -15,6 +15,18 @@ pub fn button_style(theme: &Theme, _status: Status) -> Style {
     }
 }
 
+pub fn button_active_style(theme: &Theme, _status: Status) -> Style {
+    Style {
+        background: Some(Background::Color(Color::BLACK)),
+        text_color: theme.palette().text,
+        border: Border {
+            color: Color::TRANSPARENT,
+            width: 0.0,
+            radius: 0.0.into(),
+        },
+        ..Default::default()
+    }
+}
 pub fn text_editor_style(theme: &Theme, _status: iced::widget::text_editor::Status) -> iced::widget::text_editor::Style {
     iced::widget::text_editor::Style {
         background: Background::Color(colors::gray()),

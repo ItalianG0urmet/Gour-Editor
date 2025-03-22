@@ -1,55 +1,94 @@
+use std::collections::HashMap;
 use std::fs;
-use std::path::Path;
-use iced::highlighter::{Theme};
 use rfd::FileDialog;
-use iced::widget::{column, Column, text_editor, button, text, row};
-use crate::style::{button_style, text_editor_style};
+use iced::widget::{text_editor};
 
 #[derive(Debug, Default)]
 pub struct State {
-    message: String,
-    content: text_editor::Content,
-    file: Option<String>
+    pub(crate) message: String, //This is the message that appear
+    pub(crate) current_file_content: text_editor::Content,
+    pub(crate) current_file_path: Option<String>,
+    pub(crate) opened_files: HashMap<String, String>,
+
+    pub(crate) selected_folder: Option<String>,
+    pub(crate) selected_folder_files: Vec<String>,
+    pub(crate) enable_directorys_view: bool,
 }
 
 #[derive(Debug, Clone)]
 pub enum Message {
     Edit(text_editor::Action),
+    OpenFolder,
     OpenFile,
+    OpenFileString(String),
     SaveFile,
     NewFile,
+    ViewDirectorys,
+    ChangeMainFile(String),
 }
 
 pub fn update(state: &mut State, message: Message){
     match message{
         Message::Edit(action) => {
-            state.content.perform(action)
+            state.current_file_content.perform(action)
         }
         Message::OpenFile =>{
 
-            let old_file =state.file.clone();
+            let old_file =state.current_file_path.clone();
 
             if let Some(path) = FileDialog::new().pick_file() {
-                state.file = Some(path.display().to_string());
+                state.current_file_path = Some(path.display().to_string());
             }
 
-            if let Some(path) = &state.file {
+            if let Some(path) = &state.current_file_path {
                 match fs::read_to_string(path) {
                     Ok(content) => {
-                        state.content = text_editor::Content::with_text(&content);
+                        state.current_file_content = text_editor::Content::with_text(&content);
+                        state.opened_files.insert(String::from(path), content);
                         state.message = format!("Selected string: {}", path)
                     },
                     Err(_) => {
                         state.message = "Can't open this file".to_string();
-                        state.file = old_file.clone();
+                        state.current_file_path = old_file.clone();
                     }
                 }
             } else {
                 state.message = "No file selected".to_string()
             }
         }
+        Message::OpenFolder => {
+            let old_folder =  state.selected_folder.clone();
+            state.selected_folder_files.clear();
+
+            if let Some(path) = FileDialog::new().pick_folder() {
+                let folder_path = path.display().to_string();
+                state.selected_folder = Some(folder_path.clone());
+
+                match fs::read_dir(&folder_path) {
+                    Ok(entries) => {
+                        let mut files = Vec::new();
+                        for entry in entries.flatten() {
+                            if let Ok(file_type) = entry.file_type() {
+                                let path = entry.path();
+                                if file_type.is_file() {
+                                    files.push(path.display().to_string());
+                                }
+                            }
+                        }
+                        state.selected_folder_files = files;
+                        state.message = format!("Selected folder: {}", folder_path);
+                    },
+                    Err(_) => {
+                        state.message = "Can't open this folder".to_string();
+                        state.selected_folder = old_folder;
+                    }
+                }
+            } else {
+                state.message = "No folder selected".to_string();
+            }
+        }
         Message::SaveFile => {
-            let path = if let Some(path) = &state.file{
+            let path = if let Some(path) = &state.current_file_path {
                 path.clone()
             } else if let Some(path) = FileDialog::new().save_file() {
                 path.display().to_string()
@@ -58,35 +97,50 @@ pub fn update(state: &mut State, message: Message){
                 return;
             };
 
-            let content = state.content.text().to_owned();
+            let content = state.current_file_content.text().to_owned();
             match fs::write(&path, content){
                 Ok(_) => state.message = "File saved".to_string(),
                 Err(_) => state.message = "Error saving file".to_string(),
             }
         }
         Message::NewFile => {
-            state.content = text_editor::Content::with_text("");
-            state.file = None;
+            state.current_file_content = text_editor::Content::with_text("");
+            state.current_file_path = None;
             state.message = "New file created".to_string();
+        }
+        Message::OpenFileString(path) => {
+
+            let path_clone = path.clone();
+
+            match fs::read_to_string(path) {
+                Ok(content) => {
+                    state.current_file_content = text_editor::Content::with_text(&content);
+                    state.current_file_path = Some(path_clone);
+                },
+                Err(_) => {
+                    state.message = "Can't open this file".to_string();
+                }
+            }
+        }
+        Message::ViewDirectorys => {
+
+                state.enable_directorys_view = !state.enable_directorys_view;
+
+        }
+        Message::ChangeMainFile(path) => {
+            if let Some(new_content) = state.opened_files.get(&path){
+                if state.current_file_path == Some(path.clone()) {
+                    state.message = "Already in file".to_string();
+                    return;
+                }
+                state.current_file_content = text_editor::Content::with_text(&new_content);
+                state.current_file_path = path.into();
+            } else {
+                state.message = "Error".to_string();
+            }
+
         }
     }
 }
 
 
-pub fn view(state: &State) -> Column<Message>{
-
-    column![
-        row![
-            button("Open").style(button_style).on_press(Message::OpenFile),
-            button("Save").style(button_style).on_press(Message::SaveFile),
-            button("New File").style(button_style).on_press(Message::NewFile),
-
-        ].spacing(0),
-
-        text(state.message.clone()),
-        text_editor(&state.content).style(text_editor_style)
-            .on_action(Message::Edit).height(10000).highlight(state.file.as_ref()
-            .and_then(|path| Path::new(path).extension()?.to_str())
-            .unwrap_or("txt"), Theme::SolarizedDark)
-    ].spacing(10).into()
-}
