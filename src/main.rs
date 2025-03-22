@@ -1,9 +1,8 @@
-mod window;
-mod style;
-mod view;
-mod colors;
+mod filemanager;
+mod frame;
 
 use iced::{Result, Theme};
+use crate::frame::{view, window};
 
 fn main() -> Result {
     iced::application("Gour - Editor", window::update, view::view).theme(theme).run()

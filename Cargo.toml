@@ -5,4 +5,5 @@ edition = "2024"
 
 [dependencies]
 iced = { version = "0.13.1", features = ["highlighter"] }
+iced_aw = "0.12.2"
 rfd = "0.15.3"
