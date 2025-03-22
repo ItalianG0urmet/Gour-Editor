@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 use rfd::FileDialog;
-use iced::widget::{text_editor};
+use iced::widget::text_editor;
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -25,15 +25,22 @@ pub enum Message {
     NewFile,
     ViewDirectorys,
     ChangeMainFile(String),
+    CloseFile(String)
 }
 
 pub fn update(state: &mut State, message: Message){
     match message{
+        Message::CloseFile(path) => {
+            state.opened_files.remove(&path);
+        }
         Message::Edit(action) => {
             state.current_file_content.perform(action);
             if let Some(path) = &state.current_file_path {
                 if let Some(value) = state.opened_files.get_mut(path) {
                     *value = state.current_file_content.text();
+                };
+                if !state.opened_files.contains_key(path){
+                    state.opened_files.insert(String::from(path), state.current_file_content.text());
                 }
             }
         }

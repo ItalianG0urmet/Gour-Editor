@@ -1,6 +1,6 @@
 use iced::widget::{button, column, row, text, text_editor, Column, Row};
 use std::path::Path;
-use iced::Fill;
+use iced::{Element, Fill};
 use iced::highlighter::Theme;
 use crate::style::{button_active_style, button_style, text_editor_style};
 use crate::window::{Message, State};
@@ -42,7 +42,7 @@ pub fn view(state: &State) -> Column<Message>{
 
             column![
                 Row::with_children(
-                    state.opened_files.iter().map(|(path, content)| {
+                    state.opened_files.iter().flat_map(|(path, content)| {
                         let file_name = Path::new(path)
                             .file_name()
                             .and_then(|n| n.to_str())
@@ -52,15 +52,24 @@ pub fn view(state: &State) -> Column<Message>{
                             .map(|current| Path::new(current) != Path::new(path))
                             .unwrap_or(false);
 
-
-                        button(file_name)
-                            .style(if is_active {
+                        vec![
+                            button(file_name)
+                                .style(if is_active {
+                                        button_style
+                                    }else{
+                                        button_active_style
+                                    })
+                                .on_press(Message::ChangeMainFile(path.clone()))
+                                .into(),
+                            button("x")
+                                .style(if is_active {
                                     button_style
                                 }else{
                                     button_active_style
                                 })
-                            .on_press(Message::ChangeMainFile(path.clone()))
-                            .into()
+                                .on_press(Message::CloseFile(path.clone()))
+                                .into()
+                            ]
                     }).collect::<Vec<_>>()
                 ),
 
