@@ -1,8 +1,6 @@
 use std::collections::HashMap;
-use std::fs;
-use rfd::FileDialog;
 use iced::widget::text_editor;
-use crate::filemanager::{open_file, open_file_by_string, save_file};
+use crate::filemanager::{open_file, open_file_by_string, save_file, open_directory};
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -34,6 +32,7 @@ pub fn update(state: &mut State, message: Message){
         Message::CloseFile(path) => {
             //TODO: Devo fare il sistema che controlla se il file e' modificato e ti chiede di salvarlo
             state.opened_files.remove(&path);
+            println!("{}", state.opened_files.len());
         }
         Message::Edit(action) => {
             state.current_file_content.perform(action);
@@ -50,7 +49,7 @@ pub fn update(state: &mut State, message: Message){
             open_file(state);
         }
         Message::OpenFolder => {
-            open_file(state);
+            open_directory(state);
         }
         Message::SaveFile => {
             save_file(state);
