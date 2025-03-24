@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use iced::widget::text_editor;
-use crate::filemanager::{open_file, open_file_by_string, save_file, open_directory, open_directory_by_string};
+use crate::filemanager::{open_file, open_file_by_string, save_file, open_directory, open_directory_by_string, save_all_file};
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -26,7 +26,8 @@ pub enum Message {
     NewFile,
     ViewDirectorys,
     ChangeMainFile(String),
-    CloseFile(String)
+    CloseFile(String),
+    SaveAll,
 }
 
 pub fn update(state: &mut State, message: Message){
@@ -85,5 +86,9 @@ pub fn update(state: &mut State, message: Message){
             }
 
         }
+        Message::SaveAll => {
+            save_all_file(state);
+            save_file(state);
+        }   
     }
 }

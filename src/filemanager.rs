@@ -113,6 +113,14 @@ pub fn save_file(state: &mut State){
     }
 }
 
+pub fn save_all_file(state: &mut State){
+    for (path, content) in state.opened_files.iter(){
+        if let Err(e) = fs::write(path, content){
+            state.message = format!("Error on saving <{}>: {}", path, e)
+        }
+    }
+}
+
 pub fn open_file_by_string(state: &mut State, path: String){
     let path_clone = path.clone();
     match fs::read_to_string(path) {

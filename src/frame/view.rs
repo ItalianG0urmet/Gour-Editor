@@ -1,4 +1,3 @@
-use std::ops::Deref;
 use iced::widget::{button, Column, Row, Text, text_editor};
 use iced::{Fill, Renderer, Theme};
 use iced_aw::{menu::{Item, Menu}, MenuBar};
@@ -18,31 +17,32 @@ pub fn view(state: &State) -> Column<Message> {
                 button(Text::new("New File")).on_press(Message::NewFile).style(sub_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Open file")).on_press(Message::OpenFile).style(sub_button_style).width(Fill),
+                button(Text::new("Open file...")).on_press(Message::OpenFile).style(sub_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Open dir")).on_press(Message::OpenFolder).style(sub_button_style).width(Fill),
+                button(Text::new("Open folder...")).on_press(Message::OpenFolder).style(sub_button_style).width(Fill),
+            ),
+            Item::<Message, Theme, Renderer>::new(
+                button(Text::new("Save all")).on_press(Message::SaveAll).style(sub_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
                 button(Text::new("Save")).on_press(Message::SaveFile).style(sub_button_style).width(Fill),
             ),
-        ])
-            .max_width(150.0),
+        ]).max_width(150.0),
     );
     let view_menu = Item::<Message, Theme, Renderer>::with_menu(
-        button(Text::new("view")).style(button_style),
+        button(Text::new("View")).style(button_style),
         Menu::new(vec![
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("View Dir")).on_press(Message::ViewDirectorys).style(sub_button_style).width(Fill),
+                button(Text::new("Toggle side bar")).on_press(Message::ViewDirectorys).style(sub_button_style).width(Fill),
             ),
         ]).max_width(150.0),
     );
 
-    let menu_bar = MenuBar::new(vec![file_menu, view_menu]);
+    let menu_bar = MenuBar::new(vec![file_menu, view_menu]).width(Fill);
 
     //Directory
     let left_column = if state.enable_directorys_view {
-        //Aggiungere pure le diverse directory
         let directory_files = Column::with_children(
             state.selected_folder_files
                 .iter()
@@ -57,9 +57,7 @@ pub fn view(state: &State) -> Column<Message> {
                         .width(Fill)
                         .on_press(Message::OpenFileString(file.clone()))
                         .into()
-                })
-                .collect::<Vec<_>>(),
-
+                }).collect::<Vec<_>>(),
         );
         let directory_folders = Column::with_children(
             state.selected_folder_folders
