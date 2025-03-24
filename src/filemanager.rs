@@ -48,6 +48,7 @@ pub fn open_directory(state: &mut State){
                         } else {
                             folders.push(path.display().to_string())
                         }
+                        state.enable_directorys_view = true;
                     }
                 }
                 state.selected_folder_files = files;
