@@ -75,14 +75,19 @@ pub fn view(state: &State) -> Column<Message> {
                         .into()
                 }).collect::<Vec<_>>(),
         );
-        Column::new()
-            .push(button("..").style(directory_button_style).on_press(Message::OpenFolderByString(
-                Path::new(state.selected_folder.as_deref().unwrap_or("/")).parent().unwrap_or_else(|| Path::new("/")).to_string_lossy().to_string()
-            )).width(Fill))
-            .push(directory_folders)
-            .push(directory_files)
-            .width(200)
-            .spacing(5)
+        if state.selected_folder != None {
+            Column::new()
+                .push(button("..").style(directory_button_style).on_press(Message::OpenFolderByString(
+                    Path::new(state.selected_folder.as_deref().unwrap_or("/")).parent().unwrap_or_else(|| Path::new("/")).to_string_lossy().to_string()
+                )).width(Fill))
+                .push(directory_folders)
+                .push(directory_files)
+                .width(200)
+                .spacing(5)
+        } else {
+            Column::new().push(button("").style(directory_button_style)).width(200)
+        }
+
     } else {
         Column::new().width(0)
     };
