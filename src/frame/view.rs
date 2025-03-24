@@ -2,7 +2,6 @@ use iced::widget::{button, Column, Row, Text, text_editor};
 use iced::{Fill, Renderer, Theme};
 use iced_aw::{menu::{Item, Menu}, MenuBar};
 use std::path::Path;
-use iced::advanced::Widget;
 use crate::frame::style::style::{button_active_style, button_style, directory_button_style, sub_button_style, text_editor_style};
 use crate::window::{Message, State};
 
@@ -42,9 +41,9 @@ pub fn view(state: &State) -> Column<Message> {
 
     //Directory
     let left_column = if state.enable_directorys_view {
+        //Aggiungere pure le diverse directory
         let directory_files = Column::with_children(
-            state
-                .selected_folder_files
+            state.selected_folder_files
                 .iter()
                 .map(|file| {
                     let file_name = Path::new(file)
@@ -60,7 +59,9 @@ pub fn view(state: &State) -> Column<Message> {
                 .collect::<Vec<_>>(),
         );
         Column::new()
-            .push(button("..").style(directory_button_style).on_press(Message::SaveFile).width(Fill))
+            .push(button("..").style(directory_button_style).on_press(Message::OpenFolderByString(
+                Path::new(state.selected_folder.as_deref().unwrap_or("/")).parent().unwrap_or_else(|| Path::new("/")).to_string_lossy().to_string()
+            )).width(Fill))
             .push(directory_files)
             .width(200)
             .spacing(5)

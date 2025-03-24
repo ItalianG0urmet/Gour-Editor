@@ -7,3 +7,4 @@ edition = "2024"
 iced = { version = "0.13.1", features = ["highlighter"] }
 iced_aw = "0.12.2"
 rfd = "0.15.3"
+iced_term = "0.5.1"

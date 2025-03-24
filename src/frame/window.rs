@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use iced::widget::text_editor;
-use crate::filemanager::{open_file, open_file_by_string, save_file, open_directory};
+use crate::filemanager::{open_file, open_file_by_string, save_file, open_directory, open_directory_by_string};
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -18,6 +18,7 @@ pub struct State {
 pub enum Message {
     Edit(text_editor::Action),
     OpenFolder,
+    OpenFolderByString(String),
     OpenFile,
     OpenFileString(String),
     SaveFile,
@@ -32,7 +33,6 @@ pub fn update(state: &mut State, message: Message){
         Message::CloseFile(path) => {
             //TODO: Devo fare il sistema che controlla se il file e' modificato e ti chiede di salvarlo
             state.opened_files.remove(&path);
-            println!("{}", state.opened_files.len());
         }
         Message::Edit(action) => {
             state.current_file_content.perform(action);
@@ -44,6 +44,10 @@ pub fn update(state: &mut State, message: Message){
                     state.opened_files.insert(String::from(path), state.current_file_content.text());
                 }
             }
+        }
+        Message::OpenFolderByString(path) => {
+            open_directory_by_string(state, path);
+
         }
         Message::OpenFile =>{
             open_file(state);
