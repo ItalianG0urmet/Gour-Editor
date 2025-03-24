@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use iced::widget::{button, Column, Row, Text, text_editor};
 use iced::{Fill, Renderer, Theme};
 use iced_aw::{menu::{Item, Menu}, MenuBar};
@@ -50,6 +51,7 @@ pub fn view(state: &State) -> Column<Message> {
                         .file_name()
                         .and_then(|n| n.to_str())
                         .unwrap_or(file);
+
                     button(file_name)
                         .style(directory_button_style)
                         .width(Fill)
@@ -57,11 +59,29 @@ pub fn view(state: &State) -> Column<Message> {
                         .into()
                 })
                 .collect::<Vec<_>>(),
+
+        );
+        let directory_folders = Column::with_children(
+            state.selected_folder_folders
+                .iter()
+                .map(|dir| {
+                    let dir_name = Path::new(dir)
+                        .file_name()
+                        .and_then(|n| n.to_str())
+                        .unwrap_or(dir);
+                         let display_name = format!("| {}", dir_name);
+                    button(Text::new(display_name))
+                        .style(directory_button_style)
+                        .width(Fill)
+                        .on_press(Message::OpenFolderByString(dir.clone()))
+                        .into()
+                }).collect::<Vec<_>>(),
         );
         Column::new()
             .push(button("..").style(directory_button_style).on_press(Message::OpenFolderByString(
                 Path::new(state.selected_folder.as_deref().unwrap_or("/")).parent().unwrap_or_else(|| Path::new("/")).to_string_lossy().to_string()
             )).width(Fill))
+            .push(directory_folders)
             .push(directory_files)
             .width(200)
             .spacing(5)

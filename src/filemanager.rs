@@ -30,6 +30,7 @@ pub fn open_file(state: &mut State){
 pub fn open_directory(state: &mut State){
     let old_folder =  state.selected_folder.clone();
     state.selected_folder_files.clear();
+    state.selected_folder_folders.clear();
 
     if let Some(path) = FileDialog::new().pick_folder() {
         let folder_path = path.display().to_string();
@@ -38,15 +39,19 @@ pub fn open_directory(state: &mut State){
         match fs::read_dir(&folder_path) {
             Ok(entries) => {
                 let mut files = Vec::new();
+                let mut folders = Vec::new();
                 for entry in entries.flatten() {
                     if let Ok(file_type) = entry.file_type() {
                         let path = entry.path();
                         if file_type.is_file() {
                             files.push(path.display().to_string());
+                        } else {
+                            folders.push(path.display().to_string())
                         }
                     }
                 }
                 state.selected_folder_files = files;
+                state.selected_folder_folders = folders;
                 state.message = format!("Selected folder: {}", folder_path);
             },
             Err(_) => {
@@ -62,20 +67,25 @@ pub fn open_directory(state: &mut State){
 pub fn open_directory_by_string(state: &mut State, path: String){
     let old_folder =  state.selected_folder.clone();
     state.selected_folder_files.clear();
+    state.selected_folder_folders.clear();
 
     state.selected_folder = Some(path.clone());
     match fs::read_dir(&path) {
         Ok(entries) => {
             let mut files = Vec::new();
+            let mut folders = Vec::new();
             for entry in entries.flatten() {
                 if let Ok(file_type) = entry.file_type() {
                     let path = entry.path();
                     if file_type.is_file() {
                         files.push(path.display().to_string());
+                    } else {
+                        folders.push(path.display().to_string());
                     }
                 }
             }
             state.selected_folder_files = files;
+            state.selected_folder_folders = folders;
             state.message = format!("Selected folder: {}", path);
         },
         Err(_) => {

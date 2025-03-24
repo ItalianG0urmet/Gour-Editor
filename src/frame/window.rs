@@ -11,6 +11,7 @@ pub struct State {
 
     pub(crate) selected_folder: Option<String>,
     pub(crate) selected_folder_files: Vec<String>,
+    pub(crate) selected_folder_folders: Vec<String>,
     pub(crate) enable_directorys_view: bool,
 }
 
