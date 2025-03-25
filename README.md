@@ -33,12 +33,9 @@ cargo build --release
 cargo run
 ```
 
-## Usage
-Open the application and start editing text. Additional features will be implemented in future releases.
 
 ## Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ## Acknowledgments
 - [Iced](https://github.com/iced-rs/iced) - The GUI framework used in this project.
-- Rust community for their amazing support and resources.
