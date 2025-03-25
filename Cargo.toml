@@ -1,10 +1,9 @@
 [package]
 name = "text_editor"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 
 [dependencies]
 iced = { version = "0.13.1", features = ["highlighter"] }
 iced_aw = "0.12.2"
 rfd = "0.15.3"
-iced_term = "0.5.1"

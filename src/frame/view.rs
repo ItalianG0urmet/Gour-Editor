@@ -1,5 +1,5 @@
 use iced::widget::{button, Column, Row, Text, text_editor};
-use iced::{Fill, Renderer, Theme};
+use iced::{Border, Color, Fill, Renderer, Theme};
 use iced_aw::{menu::{Item, Menu}, MenuBar};
 use std::path::Path;
 use crate::frame::style::style::{button_active_style, button_style, directory_button_style, sub_button_style, text_editor_style};
@@ -77,7 +77,7 @@ pub fn view(state: &State) -> Column<Message> {
         );
         if state.selected_folder != None {
             Column::new()
-                .push(button("..").style(directory_button_style).on_press(Message::OpenFolderByString(
+                .push(button("| ..").style(directory_button_style).on_press(Message::OpenFolderByString(
                     Path::new(state.selected_folder.as_deref().unwrap_or("/")).parent().unwrap_or_else(|| Path::new("/")).to_string_lossy().to_string()
                 )).width(Fill))
                 .push(directory_folders)
@@ -130,12 +130,11 @@ pub fn view(state: &State) -> Column<Message> {
         .on_action(Message::Edit)
         .height(Fill)
         .highlight(
-            state
-                .current_file_path
+            state.current_file_path
                 .as_ref()
                 .and_then(|path| Path::new(path).extension()?.to_str())
-                .unwrap_or("txt"),
-            iced::highlighter::Theme::SolarizedDark,
+                .unwrap_or(""),
+            iced::highlighter::Theme::Base16Ocean,
         );
     let right_column = Column::new()
         .push(file_tabs)

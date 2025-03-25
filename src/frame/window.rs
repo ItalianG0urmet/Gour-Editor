@@ -33,7 +33,6 @@ pub enum Message {
 pub fn update(state: &mut State, message: Message){
     match message{
         Message::CloseFile(path) => {
-            //TODO: Devo fare il sistema che controlla se il file e' modificato e ti chiede di salvarlo
             state.opened_files.remove(&path);
         }
         Message::Edit(action) => {
@@ -69,9 +68,7 @@ pub fn update(state: &mut State, message: Message){
             open_file_by_string(state, path);
         }
         Message::ViewDirectorys => {
-
             state.enable_directorys_view = !state.enable_directorys_view;
-
         }
         Message::ChangeMainFile(path) => {
             if let Some(new_content) = state.opened_files.get(&path){
@@ -79,7 +76,7 @@ pub fn update(state: &mut State, message: Message){
                     state.message = "Already in file".to_string();
                     return;
                 }
-                state.current_file_content = text_editor::Content::with_text(&new_content);
+                state.current_file_content = text_editor::Content::with_text(&new_content.clone());
                 state.current_file_path = path.into();
             } else {
                 state.message = "Error".to_string();

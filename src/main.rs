@@ -11,7 +11,3 @@ fn main() -> Result {
 fn theme(state: &window::State) -> Theme {
     Theme::KanagawaDragon
 }
-
-
-
-
