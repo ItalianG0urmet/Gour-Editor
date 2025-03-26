@@ -1,5 +1,5 @@
 use iced::widget::{button, Column, Row, Text, text_editor};
-use iced::{Border, Color, Fill, Renderer, Theme};
+use iced::{Fill, Renderer, Theme};
 use iced_aw::{menu::{Item, Menu}, MenuBar};
 use std::path::Path;
 use crate::frame::style::style::{button_active_style, button_style, directory_button_style, sub_button_style, text_editor_style};
@@ -17,10 +17,10 @@ pub fn view(state: &State) -> Column<Message> {
                 button(Text::new("New File")).on_press(Message::NewFile).style(sub_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Open file...")).on_press(Message::OpenFile).style(sub_button_style).width(Fill),
+                button(Text::new("Open file")).on_press(Message::OpenFile).style(sub_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Open folder...")).on_press(Message::OpenFolder).style(sub_button_style).width(Fill),
+                button(Text::new("Open folder")).on_press(Message::OpenFolder).style(sub_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
                 button(Text::new("Save all")).on_press(Message::SaveAll).style(sub_button_style).width(Fill),
