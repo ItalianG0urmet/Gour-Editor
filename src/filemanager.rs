@@ -87,7 +87,7 @@ pub fn open_directory_by_string(state: &mut State, path: String){
             }
             state.selected_folder_files = files;
             state.selected_folder_folders = folders;
-            state.message = format!("Selected folder: {}", path);
+            state.message = format!("Current folder: {}", path);
         },
         Err(_) => {
             state.message = "Can't open this folder".to_string();
@@ -116,7 +116,7 @@ pub fn save_file(state: &mut State){
 pub fn save_all_file(state: &mut State){
     for (path, content) in state.opened_files.iter(){
         if let Err(e) = fs::write(path, content){
-            state.message = format!("Error on saving <{}>: {}", path, e)
+            state.message = format!("Can't save <{}>, error: {}", path, e)
         }
     }
 }

@@ -8,8 +8,8 @@ pub fn directory_button_style(theme: &Theme, _status: Status) -> Style {
         text_color: theme.palette().text,
         border: Border {
             color: Color::TRANSPARENT,
-            width: 1.0,
-            radius: 2.0.into(),
+            width: 0.0,
+            radius: 0.0.into(),
         },
         ..Default::default()
     }
