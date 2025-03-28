@@ -1,4 +1,4 @@
-# Gourmet Text Editor (Alpha)
+# Text Editor ![](https://img.shields.io/badge/Platform-Linux-only-blue) ![Alpha](https://img.shields.io/badge/Status-Alpha-red)
 
 An experimental and modern text editor built with Rust and the [Iced](https://github.com/iced-rs/iced) GUI library.
 
