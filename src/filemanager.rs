@@ -28,13 +28,13 @@ pub fn open_file(state: &mut State){
 }
 
 pub fn open_directory(state: &mut State){
-    let old_folder =  state.selected_folder.clone();
-    state.selected_folder_files.clear();
-    state.selected_folder_folders.clear();
+    let old_folder =  state.current_folder.clone();
+    state.current_folder_files.clear();
+    state.current_folder_folders.clear();
 
     if let Some(path) = FileDialog::new().pick_folder() {
         let folder_path = path.display().to_string();
-        state.selected_folder = Some(folder_path.clone());
+        state.current_folder = Some(folder_path.clone());
 
         match fs::read_dir(&folder_path) {
             Ok(entries) => {
@@ -48,16 +48,16 @@ pub fn open_directory(state: &mut State){
                         } else {
                             folders.push(path.display().to_string())
                         }
-                        state.enable_directorys_view = true;
+                        state.enable_folder_tree = true;
                     }
                 }
-                state.selected_folder_files = files;
-                state.selected_folder_folders = folders;
+                state.current_folder_files = files;
+                state.current_folder_folders = folders;
                 state.message = format!("Selected folder: {}", folder_path);
             },
             Err(_) => {
                 state.message = "Can't open this folder".to_string();
-                state.selected_folder = old_folder;
+                state.current_folder = old_folder;
             }
         }
     } else {
@@ -66,11 +66,11 @@ pub fn open_directory(state: &mut State){
 }
 
 pub fn open_directory_by_string(state: &mut State, path: String){
-    let old_folder =  state.selected_folder.clone();
-    state.selected_folder_files.clear();
-    state.selected_folder_folders.clear();
+    let old_folder =  state.current_folder.clone();
+    state.current_folder_files.clear();
+    state.current_folder_folders.clear();
 
-    state.selected_folder = Some(path.clone());
+    state.current_folder = Some(path.clone());
     match fs::read_dir(&path) {
         Ok(entries) => {
             let mut files = Vec::new();
@@ -85,13 +85,13 @@ pub fn open_directory_by_string(state: &mut State, path: String){
                     }
                 }
             }
-            state.selected_folder_files = files;
-            state.selected_folder_folders = folders;
+            state.current_folder_files = files;
+            state.current_folder_folders = folders;
             state.message = format!("Current folder: {}", path);
         },
         Err(_) => {
             state.message = "Can't open this folder".to_string();
-            state.selected_folder = old_folder;
+            state.current_folder = old_folder;
         }
     }
 }

@@ -2,7 +2,7 @@ use iced::widget::{button, Column, Row, Text, text_editor};
 use iced::{Fill, Renderer, Theme};
 use iced_aw::{menu::{Item, Menu}, MenuBar};
 use std::path::Path;
-use crate::frame::style::style::{button_active_style, button_style, directory_button_style, sub_button_style, text_editor_style};
+use crate::frame::style::style::{button_active_style, button_style, transparent_button_style, text_editor_style};
 use crate::window::{Message, State};
 
 
@@ -14,19 +14,19 @@ pub fn view(state: &State) -> Column<Message> {
         button(Text::new("File")).style(button_style),
         Menu::new(vec![
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("New File")).on_press(Message::NewFile).style(sub_button_style).width(Fill),
+                button(Text::new("New File")).on_press(Message::NewFile).style(transparent_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Open file")).on_press(Message::OpenFile).style(sub_button_style).width(Fill),
+                button(Text::new("Open file")).on_press(Message::OpenFile).style(transparent_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Open folder")).on_press(Message::OpenFolder).style(sub_button_style).width(Fill),
+                button(Text::new("Open folder")).on_press(Message::OpenFolder).style(transparent_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Save all")).on_press(Message::SaveAll).style(sub_button_style).width(Fill),
+                button(Text::new("Save all")).on_press(Message::SaveAll).style(transparent_button_style).width(Fill),
             ),
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Save")).on_press(Message::SaveFile).style(sub_button_style).width(Fill),
+                button(Text::new("Save")).on_press(Message::SaveFile).style(transparent_button_style).width(Fill),
             ),
         ]).max_width(150.0),
     );
@@ -34,7 +34,7 @@ pub fn view(state: &State) -> Column<Message> {
         button(Text::new("View")).style(button_style),
         Menu::new(vec![
             Item::<Message, Theme, Renderer>::new(
-                button(Text::new("Toggle side bar")).on_press(Message::ViewDirectorys).style(sub_button_style).width(Fill),
+                button(Text::new("Toggle side bar")).on_press(Message::ViewDirectorys).style(transparent_button_style).width(Fill),
             ),
         ]).max_width(150.0),
     );
@@ -42,9 +42,9 @@ pub fn view(state: &State) -> Column<Message> {
     let menu_bar = MenuBar::new(vec![file_menu, view_menu]).width(Fill);
 
     //Directory
-    let left_column = if state.enable_directorys_view {
+    let left_column = if state.enable_folder_tree {
         let directory_files = Column::with_children(
-            state.selected_folder_files
+            state.current_folder_files
                 .iter()
                 .map(|file| {
                     let file_name = Path::new(file)
@@ -53,14 +53,14 @@ pub fn view(state: &State) -> Column<Message> {
                         .unwrap_or(file);
 
                     button(file_name)
-                        .style(directory_button_style)
+                        .style(transparent_button_style)
                         .width(Fill)
                         .on_press(Message::OpenFileString(file.clone()))
                         .into()
                 }).collect::<Vec<_>>(),
         );
         let directory_folders = Column::with_children(
-            state.selected_folder_folders
+            state.current_folder_folders
                 .iter()
                 .map(|dir| {
                     let dir_name = Path::new(dir)
@@ -69,23 +69,23 @@ pub fn view(state: &State) -> Column<Message> {
                         .unwrap_or(dir);
                          let display_name = format!("| {}", dir_name);
                     button(Text::new(display_name))
-                        .style(directory_button_style)
+                        .style(transparent_button_style)
                         .width(Fill)
                         .on_press(Message::OpenFolderByString(dir.clone()))
                         .into()
                 }).collect::<Vec<_>>(),
         );
-        if state.selected_folder != None {
+        if state.current_folder != None {
             Column::new()
-                .push(button("| ..").style(directory_button_style).on_press(Message::OpenFolderByString(
-                    Path::new(state.selected_folder.as_deref().unwrap_or("/")).parent().unwrap_or_else(|| Path::new("/")).to_string_lossy().to_string()
+                .push(button("| ..").style(transparent_button_style).on_press(Message::OpenFolderByString(
+                    Path::new(state.current_folder.as_deref().unwrap_or("/")).parent().unwrap_or_else(|| Path::new("/")).to_string_lossy().to_string()
                 )).width(Fill))
                 .push(directory_folders)
                 .push(directory_files)
                 .width(200)
                 .spacing(5)
         } else {
-            Column::new().push(button("").style(directory_button_style)).width(200)
+            Column::new().push(button("").style(transparent_button_style)).width(200)
         }
 
     } else {

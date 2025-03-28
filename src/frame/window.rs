@@ -9,10 +9,10 @@ pub struct State {
     pub(crate) current_file_path: Option<String>,
     pub(crate) opened_files: HashMap<String, String>, //Path and Content
 
-    pub(crate) selected_folder: Option<String>,
-    pub(crate) selected_folder_files: Vec<String>,
-    pub(crate) selected_folder_folders: Vec<String>,
-    pub(crate) enable_directorys_view: bool,
+    pub(crate) current_folder: Option<String>,
+    pub(crate) current_folder_files: Vec<String>,
+    pub(crate) current_folder_folders: Vec<String>,
+    pub(crate) enable_folder_tree: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -68,7 +68,7 @@ pub fn update(state: &mut State, message: Message){
             open_file_by_string(state, path);
         }
         Message::ViewDirectorys => {
-            state.enable_directorys_view = !state.enable_directorys_view;
+            state.enable_folder_tree = !state.enable_folder_tree;
         }
         Message::ChangeMainFile(path) => {
             if let Some(new_content) = state.opened_files.get(&path){
