@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use iced::widget::text_editor;
-use crate::filemanager::{open_file, open_file_by_string, save_file, open_directory, open_directory_by_string, save_all_file};
+use crate::filemanager::{open_file, open_file_by_string, save_file, open_directory, open_directory_by_string, save_all_file, change_main_file};
 
 #[derive(Debug, Default)]
 pub struct State {
@@ -71,17 +71,7 @@ pub fn update(state: &mut State, message: Message){
             state.enable_folder_tree = !state.enable_folder_tree;
         }
         Message::ChangeMainFile(path) => {
-            if let Some(new_content) = state.opened_files.get(&path){
-                if state.current_file_path == Some(path.clone()) {
-                    state.message = "Already in file".to_string();
-                    return;
-                }
-                state.current_file_content = text_editor::Content::with_text(&new_content.clone());
-                state.current_file_path = path.into();
-            } else {
-                state.message = "Error".to_string();
-            }
-
+            change_main_file(state, path);
         }
         Message::SaveAll => {
             save_all_file(state);

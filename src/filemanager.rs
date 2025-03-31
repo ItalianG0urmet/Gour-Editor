@@ -65,6 +65,20 @@ pub fn open_directory(state: &mut State){
     }
 }
 
+pub fn change_main_file(state: &mut State, path: String){
+    if let Some(new_content) = state.opened_files.get(&path){
+        if state.current_file_path == Some(path.clone()) {
+            state.message = "Already in file".to_string();
+            return;
+        }
+        state.current_file_content = text_editor::Content::with_text(&new_content.clone());
+        state.current_file_path = path.into();
+    } else {
+        state.message = "Error".to_string();
+    }
+
+}
+
 pub fn open_directory_by_string(state: &mut State, path: String){
     let old_folder =  state.current_folder.clone();
     state.current_folder_files.clear();
